@@ -1,11 +1,14 @@
 package Utils;
 
 import java.net.URL;
-import java.time.Duration;
 import org.testng.Assert;
+import java.time.Duration;
+import java.io.IOException;
+import java.io.FileInputStream;
 
 import java.util.List;
 import java.util.Random;
+import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
 import org.openqa.selenium.By;
@@ -30,12 +33,15 @@ import io.appium.java_client.touch.offset.PointOption;
 
 public class MyUtility {
 
+	//Element Declration
+	
 	public static AndroidDriver<AndroidElement> driver;
 	public DesiredCapabilities caps;
-
+	Properties prop;
 
 	public MyUtility() {
 		caps=new DesiredCapabilities();
+		prop=new Properties();
 	}
 
 
@@ -46,27 +52,30 @@ public class MyUtility {
 
 
 
-	public void driverInit()
+	public void driverInit(ReportGen report)
 	{
-		caps.setCapability(MobileCapabilityType.DEVICE_NAME, "My Phone");; 
-		caps.setCapability(MobileCapabilityType.UDID, "emulator-5554"); 
-		caps.setCapability(MobileCapabilityType.PLATFORM_NAME, "Android");
-		caps.setCapability(MobileCapabilityType.PLATFORM_VERSION, "10");
-		caps.setCapability(MobileCapabilityType.NO_RESET, "true");
-		caps.setCapability(AndroidMobileCapabilityType.APP_PACKAGE, "com.ebay.mobile");
-		caps.setCapability(AndroidMobileCapabilityType.APP_ACTIVITY, "com.ebay.mobile.activities.MainActivity");
+		try
+		{
+			prop = loadPropertyFile(System.getProperty("user.dir") + "/src/main/resources//PropertyFiles/capability.properties");
+			caps.setCapability(MobileCapabilityType.DEVICE_NAME, prop.getProperty("deviceName"));
+			caps.setCapability(MobileCapabilityType.UDID, prop.getProperty("udid")); 
+			caps.setCapability(MobileCapabilityType.PLATFORM_NAME, prop.getProperty("platformName"));
+			caps.setCapability(MobileCapabilityType.PLATFORM_VERSION, prop.getProperty("platformVersion"));
+			caps.setCapability(MobileCapabilityType.NO_RESET, prop.getProperty("set_reset_true"));
+			caps.setCapability(AndroidMobileCapabilityType.APP_PACKAGE, prop.getProperty("appPackage"));
+			caps.setCapability(AndroidMobileCapabilityType.APP_ACTIVITY, prop.getProperty("appActivity"));
 
 
 
-		//Instantiate Android Driver
-		try {
-			driver = new AndroidDriver<AndroidElement>(new URL("http://0.0.0.0:4723/wd/hub"), caps);
+			//Instantiate Android Driver
+			driver = new AndroidDriver<AndroidElement>(new URL(prop.getProperty("hubUrl")), caps);
 			driver.manage().timeouts().implicitlyWait(20, TimeUnit.SECONDS);
 		}
 
 		catch(Exception e) 
 		{
 			e.printStackTrace();
+			report.extentReportFail(e.getMessage());
 			Assert.assertTrue(false, e.getMessage());
 			System.out.println("Cause is:" + e.getCause());
 			System.out.println("Message is: " + e.getMessage());
@@ -77,7 +86,7 @@ public class MyUtility {
 
 
 	/*
-	 * Description: Function to wait for an element to be clickable
+	 * Description: Reusable function to wait for an element to be clickable
 	 * Created By: Ashish Aswal
 	 * Attribute: elementType- element type String passed is an id or xpath
 	 * 			  element - unique element identifier
@@ -102,13 +111,34 @@ public class MyUtility {
 
 
 
+	/*
+	 * Description: Reusable function to load the property File
+	 * Created By: 	Ashish Aswal
+	 * Attribute:	path- Path of the property file
+	 * 				input - Our input Stream
+	 */
+	public Properties loadPropertyFile(String path)
+	{
+		try
+		{
+			FileInputStream input = new FileInputStream(path);
+			prop.load(input);
+		}
+		catch (IOException e) {
+			e.printStackTrace();
+			Assert.assertTrue(false, e.getMessage());
+		}
+		return prop;
+	}
+
+
 
 
 	/*
-	 * Description: Function to wait for an element to appear on the screen
-	 * Created By: Ashish Aswal
-	 * Attribute: elementType- element type String passed is an id or xpath
-	 * 			  element - unique element identifier
+	 * Description: Reusable function to wait for an element to appear on the screen
+	 * Created By: 	Ashish Aswal
+	 * Attribute: 	elementType- element type String passed is an id or xpath
+	 * 			  	element - unique element identifier
 	 */
 
 
@@ -129,16 +159,18 @@ public class MyUtility {
 	}
 
 
+	
+	
 	/*
-	 * Description: Function to click on an element
-	 * Created By: Ashish Aswal
-	 * Attribute: elementType- element type String passed is an id or xpath
-	 * 			  element - unique element identifier
+	 * Description: Reusable function to click on an element
+	 * Created By: 	Ashish Aswal
+	 * Attribute: 	elementType- element type String passed is an id or xpath
+	 * 			  	element - unique element identifier
+	 * 				report- Object of ReportGen class to generate extent report
 	 */
 
 
-
-	public void click(String elementType,String element) 
+	public void click(String elementType,String element, ReportGen report) 
 	{
 		try
 		{
@@ -146,6 +178,8 @@ public class MyUtility {
 				driver.findElement(By.id(element)).click();
 			else if(elementType.equalsIgnoreCase("xpath"))
 				driver.findElement(By.xpath(element)).click();
+
+			report.extentReportPass(element + " is clicked..");
 
 		}
 		catch (Exception e) {
@@ -159,7 +193,8 @@ public class MyUtility {
 
 	/*
 	 * Description: Reusable function to swipe up on the screen
-	 * Created By: Ashish Aswal
+	 * Created By: 	Ashish Aswal
+	 * 
 	 */
 
 	public void swipeUp() 
@@ -169,7 +204,7 @@ public class MyUtility {
 			Dimension scrnSize = driver.manage().window().getSize();
 			int startx = (int) (scrnSize.width / 8);
 			int starty = (int) (scrnSize.height * 0.85);
-			int endy = (int) (scrnSize.height * 0.125);
+			int endy = (int) (scrnSize.height * 0.4);
 
 
 			(new TouchAction(driver))
@@ -179,7 +214,7 @@ public class MyUtility {
 			.release()
 			.perform();
 		} 
-		
+
 		catch (Exception e) {
 			e.printStackTrace();
 			Assert.assertTrue(false, e.getMessage());
@@ -188,21 +223,97 @@ public class MyUtility {
 
 	
 	
+	/*
+	 * Description: Reusable function to check an element is present in UI
+	 * Created By: 	Ashish Aswal
+	 * Attribute: 	elementType- element type String passed is an id or xpath
+	 * 				element - unique element identifier
+	 */
+
+	public boolean findElement(String elementType, String element)
+	{
+		driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
+		Boolean found = true;
+		try 
+		{
+			if (elementType.equalsIgnoreCase("id")) {
+			driver.findElement(By.id(element));
+			}
+			
+			if (elementType.equalsIgnoreCase("xpath")) {
+			driver.findElement(By.xpath(element));
+			}
+			
+			return found;
+
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			found = false;
+			return found;
+		}
+	}
+
 	
 	
 	/*
-	 * Description: Function to feed the value and press enter
-	 * Created By: Ashish Aswal
-	 * Attribute: elementType- element type String passed is an id or xpath
-	 * 			  element - unique element identifier
-	 * 			  value - the product we want to search for
+	 * Description: Reusable function to scroll and check an element is present in UI
+	 * Created By: 	Ashish Aswal
+	 * Attribute: 	elementType- element type String passed is an id or xpath
+	 * 				element - unique element identifier
+	 * 				report- Object of ReportGen class to generate extent report
+	 */
+
+	public void swipeTillElementShowsUp(String elementType, String element, ReportGen report) 
+	{
+		int swipes = 0;
+
+		if (elementType.equalsIgnoreCase("id")){
+			while (swipes < 4) 
+			{
+				if (findElement("id", element)) 
+					break;
+				swipeUp();
+				swipes ++;
+			}
+			
+			if (swipes > 3) 
+				Assert.assertTrue(false, "Cannot find element");
+		}
+		
+		if (elementType.equalsIgnoreCase("xpath")){
+			while (swipes < 4) 
+			{
+				if (findElement("xpath", element)) 
+					break;
+				swipeUp();
+				swipes ++;
+			}
+			
+			if (swipes > 3) 
+				Assert.assertTrue(false, "Cannot find element");
+		}
+	}
+
+
+
+
+
+	/*
+	 * Description: Reusable function to feed the value and press enter
+	 * Created By: 	Ashish Aswal
+	 * Attribute: 	elementType- element type String passed is an id or xpath
+	 * 			  	element - unique element identifier
+	 * 			  	value - the product we want to search for
+	 * 				report- Object of ReportGen class to generate extent report
 	 */
 
 
 
-	public void enterValue(String elementType,String element, String value)
+	public void enterValue(String elementType,String element, String value, ReportGen report)
 	{
 		try {
+
 			if(elementType.equalsIgnoreCase("id"))
 			{
 				driver.findElement(By.id(element)).click();
@@ -210,7 +321,9 @@ public class MyUtility {
 				driver.findElement(By.id(element)).sendKeys(value);
 				driver.pressKey(new KeyEvent(AndroidKey.ENTER));
 
+				report.extentReportPass(element + " has been enetered with value: " + value);
 			}
+
 			else if(elementType.equalsIgnoreCase("xpath"))
 			{
 				driver.findElement(By.xpath(element)).click();
@@ -218,33 +331,68 @@ public class MyUtility {
 				driver.findElement(By.xpath(element)).sendKeys(value);
 				driver.pressKey(new KeyEvent(AndroidKey.ENTER));
 
+				report.extentReportPass(element + " has been enetered with value: " + value);
 			}
 		}
 		catch (Exception e) {
 			e.printStackTrace();
+			report.extentReportFail(e.getMessage());
 			Assert.assertTrue(false, e.getMessage());
 		}
 	}
 
 
-
-	
-	
 	/*
-	 * Description: Function to select random product from search list
-	 * Created By: Ashish Aswal
-	 * Attribute: elementType- element type String passed is an id or xpath
-	 * 			  element - unique element identifier
+	 * Description: Reusable function to fetch the text from an object
+	 * Created By: 	Ashish Aswal
+	 * Attribute: 	elementType- element type String passed is an id or xpath
+	 * 			  	identifier- unique element identifier
+	 * 			  	report- Object of ReportGen class to generate extent report
+	 */
+
+
+	public String getText(String elementType,String element,ReportGen report)
+	{
+		String text = "";
+		try
+		{
+			if(elementType.equalsIgnoreCase("id"))
+				text = driver.findElement(By.id(element)).getText();
+			else if(elementType.equalsIgnoreCase("xpath"))
+				text = driver.findElement(By.xpath(element)).getText();
+
+			report.extentReportPass(text + " is retrived form " + element);
+
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			Assert.assertTrue(false, e.getMessage());
+		}
+		return text;
+
+
+
+	}
+
+
+
+
+	/*
+	 * Description: Reusable function to select random product from search list
+	 * Created By:	Ashish Aswal
+	 * Attribute: 	elementType- element type String passed is an id or xpath
+	 * 			  	element - unique element identifier
+	 * 			  	report- Object of ReportGen class to generate extent report
 	 */
 
 
 
-	public void selectRandomProduct(String elementType,String element) 
+	public void selectRandomProduct(String elementType,String element, ReportGen report) 
 	{
 		try
 		{
 			int ls_size;
-			int selected_product;
+			int selected_product_number;
 			Random rand = new Random();
 			List<AndroidElement> search_results = null;
 
@@ -254,12 +402,15 @@ public class MyUtility {
 				search_results = driver.findElements(By.xpath(element));
 
 			ls_size = search_results.size();
-			selected_product = rand.nextInt(ls_size);
-			search_results.get(selected_product).click();
+			selected_product_number = rand.nextInt(ls_size);
+			search_results.get(selected_product_number).click();
+
+			report.extentReportPass("Product number "+ selected_product_number + " has been selected randomly..");
 
 		}
 		catch (Exception e) {
 			e.printStackTrace();
+			report.extentReportFail(e.getMessage());
 			System.out.println("Cause is:" + e.getCause());
 			System.out.println("Message is: " + e.getMessage());
 		}

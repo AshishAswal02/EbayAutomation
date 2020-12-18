@@ -7,6 +7,7 @@ import org.openqa.selenium.By;
 import org.testng.collections.Lists;
 
 import Utils.MyUtility;
+import Utils.ReportGen;
 
 public class CheckoutPage extends MyUtility{
 
@@ -16,8 +17,24 @@ public class CheckoutPage extends MyUtility{
 	String checkout = "com.ebay.mobile:id/shopping_cart_checkout";
 	String checkout_name =  "com.ebay.mobile:id/item_title";
 	String checkout_price =  "com.ebay.mobile:id/item_price";
+	List<String>  item_list = Lists.newArrayList();
+	String checkout_name_text = "";
+	String checkout_price_text = "";
+	
 
 
+	/*
+	 * Description: Method to checkout
+	 * Created By: Ashish Aswal
+	 */
+	
+	public void nowCheckout(ReportGen report) {
+		waitForElementToBeDisplayed("id", checkout_name);
+		swipeUp();
+		click("id", checkout, report);
+	}
+	
+	
 	
 	
 	/*
@@ -25,26 +42,19 @@ public class CheckoutPage extends MyUtility{
 	 * Created By: Ashish Aswal
 	 */
 	
-	public List<String> saveDetails() {
-		List<String>  item_list = Lists.newArrayList();
-		item_list.add(driver.findElement(By.id(checkout_name)).getText()); 
-		item_list.add(driver.findElement(By.id(checkout_price)).getText());
+	public List<String> saveDetails(ReportGen report)
+	{
+		checkout_name_text = getText("id", checkout_name, report);
+		checkout_price_text = getText("id", checkout_price, report);
+		
+		item_list.add(checkout_name_text); 
+		item_list.add(checkout_price_text);
 		System.out.println("After Checkout:   " + item_list);
 		return item_list;
 	}
 
 	
 	
-	/*
-	 * Description: Method to checkout
-	 * Created By: Ashish Aswal
-	 */
-	
-	public void nowCheckout() {
-		waitForElementToBeDisplayed("id", checkout_name);
-		swipeUp();
-		click("id", checkout);
-	}
 
 
 

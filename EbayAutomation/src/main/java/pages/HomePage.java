@@ -1,6 +1,7 @@
 package pages;
 
 import Utils.MyUtility;
+import Utils.ReportGen;
 
 
 
@@ -9,7 +10,7 @@ public class HomePage extends MyUtility  {
 	//Element Declration
 	
 	String search_box = "com.ebay.mobile:id/search_box";
-	String search_text = "com.ebay.mobile:id/search_src_text";
+	String search = "com.ebay.mobile:id/search_src_text";
 	
 	
 	
@@ -19,13 +20,13 @@ public class HomePage extends MyUtility  {
 	 * Created By: Ashish Aswal 
 	 */
 	
-	public void searchProduct() 
+	public void searchProduct(String input_val, ReportGen report) 
 	{
 		
 		waitForElementToBeClickable("id", search_box);
-		click("id", search_box);
-		waitForElementToBeDisplayed("id", search_text);
-		enterValue("id",search_text, "Phone");
+		click("id", search_box, report);
+		waitForElementToBeDisplayed("id", search);
+		enterValue("id", search, input_val, report);
 		
 	}
 	

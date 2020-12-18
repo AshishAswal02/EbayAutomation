@@ -2,20 +2,27 @@
 <testng-results ignored="0" total="1" passed="1" failed="0" skipped="0">
   <reporter-output>
   </reporter-output>
-  <suite started-at="2020-12-14T09:45:14 IST" name="Default suite" finished-at="2020-12-14T09:46:37 IST" duration-ms="83859">
+  <suite started-at="2020-12-18T16:48:34 IST" name="Default suite" finished-at="2020-12-18T16:49:56 IST" duration-ms="82787">
     <groups>
     </groups>
-    <test started-at="2020-12-14T09:45:14 IST" name="Default test" finished-at="2020-12-14T09:46:37 IST" duration-ms="83859">
+    <test started-at="2020-12-18T16:48:34 IST" name="Default test" finished-at="2020-12-18T16:49:56 IST" duration-ms="82787">
       <class name="tests.ProductTest">
-        <test-method is-config="true" signature="makeTestReady()[pri:0, instance:tests.ProductTest@72a7c7e0]" started-at="2020-12-14T09:45:14 IST" name="makeTestReady" finished-at="2020-12-14T09:45:54 IST" duration-ms="40872" status="PASS">
+        <test-method is-config="true" signature="makeTestReady()[pri:0, instance:tests.ProductTest@481a996b]" started-at="2020-12-18T16:48:34 IST" name="makeTestReady" finished-at="2020-12-18T16:48:59 IST" duration-ms="25455" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- makeTestReady -->
-        <test-method signature="launcher()[pri:0, instance:tests.ProductTest@72a7c7e0]" started-at="2020-12-14T09:45:54 IST" name="launcher" finished-at="2020-12-14T09:46:35 IST" duration-ms="40179" status="PASS">
+        <test-method signature="launcher()[pri:0, instance:tests.ProductTest@481a996b]" started-at="2020-12-18T16:48:59 IST" name="launcher" finished-at="2020-12-18T16:49:52 IST" duration-ms="52778" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- launcher -->
-        <test-method is-config="true" signature="afterMethod()[pri:0, instance:tests.ProductTest@72a7c7e0]" started-at="2020-12-14T09:46:35 IST" name="afterMethod" finished-at="2020-12-14T09:46:37 IST" duration-ms="2692" status="PASS">
+        <test-method is-config="true" signature="afterMethod(org.testng.ITestResult)[pri:0, instance:tests.ProductTest@481a996b]" started-at="2020-12-18T16:49:52 IST" name="afterMethod" finished-at="2020-12-18T16:49:56 IST" duration-ms="4356" status="PASS">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[[TestResult name=launcher status=SUCCESS method=ProductTest.launcher()[pri:0, instance:tests.ProductTest@481a996b] output={null}]]]>
+              </value>
+            </param>
+          </params>
           <reporter-output>
           </reporter-output>
         </test-method> <!-- afterMethod -->

@@ -4,10 +4,11 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 
 import Utils.MyUtility;
+import Utils.ReportGen;
 
 public class CartPage extends MyUtility{
 
-	
+	//
 	//Element Declration
 	
 	String addTo ="//android.widget.Button[@text='Add to cart']"; 
@@ -20,10 +21,10 @@ public class CartPage extends MyUtility{
 	 * Created By: Ashish Aswal
 	 */
 	
-	public void addToCart() {
-		swipeUp();
+	public void addToCart(ReportGen report) {
+		swipeTillElementShowsUp("xpath", addTo, report);
 		waitForElementToBeClickable("xpath", addTo);
-		click("xpath", addTo);
+		click("xpath", addTo, report);
 	}
 	
 	
@@ -33,10 +34,10 @@ public class CartPage extends MyUtility{
 	 * Created By: Ashish Aswal
 	 */
 	
-	public void goToCart() {
+	public void goToCart(ReportGen report) {
 		
 		waitForElementToBeDisplayed("xpath", goTo);
-		click("xpath", goTo);
+		click("xpath", goTo, report);
 	}
 	
 }
