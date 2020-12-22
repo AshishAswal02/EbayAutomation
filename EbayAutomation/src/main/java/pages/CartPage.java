@@ -23,7 +23,7 @@ public class CartPage extends MyUtility{
 	
 	public void addToCart(ReportGen report) {
 		swipeTillElementShowsUp("xpath", addTo, report);
-		waitForElementToBeClickable("xpath", addTo);
+		waitForElementToBeClickable("xpath", addTo, report);
 		click("xpath", addTo, report);
 	}
 	
@@ -36,7 +36,7 @@ public class CartPage extends MyUtility{
 	
 	public void goToCart(ReportGen report) {
 		
-		waitForElementToBeDisplayed("xpath", goTo);
+		waitForElementToBeDisplayed("xpath", goTo, report);
 		click("xpath", goTo, report);
 	}
 	

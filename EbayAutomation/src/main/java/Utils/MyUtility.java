@@ -11,6 +11,8 @@ import java.util.Random;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
+import javax.swing.text.Element;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -70,6 +72,7 @@ public class MyUtility {
 			//Instantiate Android Driver
 			driver = new AndroidDriver<AndroidElement>(new URL(prop.getProperty("hubUrl")), caps);
 			driver.manage().timeouts().implicitlyWait(20, TimeUnit.SECONDS);
+			report.extentReportPass("Driver initialized");
 		}
 
 		catch(Exception e) 
@@ -93,7 +96,7 @@ public class MyUtility {
 	 */
 
 
-	public void waitForElementToBeClickable(String elementType,String element)
+	public void waitForElementToBeClickable(String elementType,String element, ReportGen report)
 	{
 		try
 		{
@@ -102,9 +105,12 @@ public class MyUtility {
 				wait.until(ExpectedConditions.elementToBeClickable(By.id(element)));
 			else if(elementType.equalsIgnoreCase("xpath"))
 				wait.until(ExpectedConditions.elementToBeClickable(By.xpath(element)));
+			
+			report.extentReportPass("Element clickable now");
 		}
 		catch (Exception e) {
 			e.printStackTrace();
+			report.extentReportFail(e.getMessage());
 			Assert.assertTrue(false, e.getMessage());
 		}
 	}
@@ -142,7 +148,7 @@ public class MyUtility {
 	 */
 
 
-	public void waitForElementToBeDisplayed(String elementType,String element)
+	public void waitForElementToBeDisplayed(String elementType,String element, ReportGen report)
 	{
 		try
 		{
@@ -151,9 +157,13 @@ public class MyUtility {
 				wait.until(ExpectedConditions.visibilityOfElementLocated(By.id(element)));
 			else if(elementType.equalsIgnoreCase("xpath"))
 				wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(element)));
+			
+			report.extentReportPass("Element visible..");
+			
 		}
 		catch (Exception e) {
 			e.printStackTrace();
+			report.extentReportFail(e.getMessage());
 			Assert.assertTrue(false, e.getMessage());
 		}
 	}
@@ -184,6 +194,7 @@ public class MyUtility {
 		}
 		catch (Exception e) {
 			e.printStackTrace();
+			report.extentReportFail(e.getMessage());
 			Assert.assertTrue(false, e.getMessage());
 		}
 	}
@@ -197,7 +208,7 @@ public class MyUtility {
 	 * 
 	 */
 
-	public void swipeUp() 
+	public void swipeUp(ReportGen report) 
 	{
 
 		try {
@@ -213,10 +224,13 @@ public class MyUtility {
 			.moveTo(PointOption.point(startx,endy))
 			.release()
 			.perform();
+			
+			report.extentReportPass("Swiped Up..");
 		} 
 
 		catch (Exception e) {
 			e.printStackTrace();
+			report.extentReportFail(e.getMessage());
 			Assert.assertTrue(false, e.getMessage());
 		}
 	}
@@ -230,7 +244,7 @@ public class MyUtility {
 	 * 				element - unique element identifier
 	 */
 
-	public boolean findElement(String elementType, String element)
+	public boolean findElement(String elementType, String element, ReportGen report)
 	{
 		driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
 		Boolean found = true;
@@ -244,11 +258,13 @@ public class MyUtility {
 			driver.findElement(By.xpath(element));
 			}
 			
+			report.extentReportPass("Element found");
 			return found;
 
 
 		} catch (Exception e) {
 			e.printStackTrace();
+			report.extentReportFail(e.getMessage());
 			found = false;
 			return found;
 		}
@@ -268,37 +284,27 @@ public class MyUtility {
 	{
 		int swipes = 0;
 
-		if (elementType.equalsIgnoreCase("id")){
-			while (swipes < 4) 
-			{
-				if (findElement("id", element)) 
-					break;
-				swipeUp();
-				swipes ++;
+		while (swipes < 4)
+		{
+			if (findElement(elementType, element, report)) {
+				report.extentReportPass("Element located");
+				break;
 			}
-			
-			if (swipes > 3) 
-				Assert.assertTrue(false, "Cannot find element");
+			swipeUp(report);
+			swipes ++;
 		}
 		
-		if (elementType.equalsIgnoreCase("xpath")){
-			while (swipes < 4) 
-			{
-				if (findElement("xpath", element)) 
-					break;
-				swipeUp();
-				swipes ++;
-			}
-			
-			if (swipes > 3) 
-				Assert.assertTrue(false, "Cannot find element");
+		if (swipes > 3) {
+			Assert.assertTrue(false, "Cannot find element");
+			report.extentReportFail("Cannot find element");	
 		}
+		
 	}
+		
+		
 
-
-
-
-
+	
+	
 	/*
 	 * Description: Reusable function to feed the value and press enter
 	 * Created By: 	Ashish Aswal
@@ -366,6 +372,7 @@ public class MyUtility {
 		}
 		catch (Exception e) {
 			e.printStackTrace();
+			report.extentReportFail(e.getMessage());
 			Assert.assertTrue(false, e.getMessage());
 		}
 		return text;

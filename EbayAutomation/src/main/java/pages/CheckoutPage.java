@@ -29,8 +29,8 @@ public class CheckoutPage extends MyUtility{
 	 */
 	
 	public void nowCheckout(ReportGen report) {
-		waitForElementToBeDisplayed("id", checkout_name);
-		swipeUp();
+		waitForElementToBeDisplayed("id", checkout_name, report);
+		swipeUp(report);
 		click("id", checkout, report);
 	}
 	

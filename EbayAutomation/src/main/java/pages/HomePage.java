@@ -23,9 +23,9 @@ public class HomePage extends MyUtility  {
 	public void searchProduct(String input_val, ReportGen report) 
 	{
 		
-		waitForElementToBeClickable("id", search_box);
+		waitForElementToBeClickable("id", search_box, report);
 		click("id", search_box, report);
-		waitForElementToBeDisplayed("id", search);
+		waitForElementToBeDisplayed("id", search, report);
 		enterValue("id", search, input_val, report);
 		
 	}

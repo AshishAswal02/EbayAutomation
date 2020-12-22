@@ -24,6 +24,7 @@ import static org.testng.Assert.assertEquals;
 public class ProductTest extends MyUtility{
 
 	ReportGen extentReport;
+	ReadExcel excel;
 
 
 	/*
@@ -68,8 +69,10 @@ public class ProductTest extends MyUtility{
 		List<String>  item_details_before = Lists.newArrayList();
 		List<String>  item_details_after = Lists.newArrayList();
 		String search_input = "";
+		excel = new ReadExcel();
 		
-		search_input = new ReadExcel().readData("EbayTest");
+		
+		search_input = excel.readData("EbayTest");
 		new HomePage().searchProduct(search_input, extentReport);
 		new SearchPage().selectProduct(extentReport);
 		item_details_before = new SearchPage().saveDetails(extentReport);
@@ -99,6 +102,7 @@ public class ProductTest extends MyUtility{
 		if (ITestResult.FAILURE == result.getStatus())
 			extentReport.extentReportFail(result.getThrowable().getMessage());
 		
+		excel.closeExcel();
 		driver.quit();
 		extentReport.report.flush();
 	}

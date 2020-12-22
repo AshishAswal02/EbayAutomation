@@ -31,8 +31,8 @@ public class SearchPage extends MyUtility {
 	
 	public void selectProduct(ReportGen report) {
 		
-		waitForElementToBeDisplayed("id", follow_button);
-		swipeUp();
+		waitForElementToBeDisplayed("id", follow_button, report);
+		swipeUp(report);
 		swipeTillElementShowsUp("id", products, report);
 		selectRandomProduct("id",products, report);
 		
